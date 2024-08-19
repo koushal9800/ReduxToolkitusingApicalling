@@ -1,13 +1,20 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import MyButton from '../components/MyButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { decrement, increment } from '../redux/features/CounterSlice';
 
 const CounterScreen = () => {
+
+const dispatch = useDispatch()
+const count = useSelector(state => state.counter.value)
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>0</Text>
-      <MyButton title="Add" onPress={() => {}} />
-      <MyButton title="Minus" onPress={() => {}} />
+      <Text style={styles.title}>{count}</Text>
+      <MyButton title="Add" onPress={() =>  dispatch(increment()) } />
+      <MyButton title="Minus" onPress={() => dispatch(decrement())} />
     </View>
   );
 };
