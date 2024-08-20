@@ -6,17 +6,37 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import MyButton from '../components/MyButton';
 import MyBackButton from '../components/MyBackButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, removeFromCart } from '../redux/features/CartSlice';
 
 const SingleProduct = () => {
+  // State
+  const [currentItem,setCurrentItem] = useState({})
   // hooks
   const {
     params: {Product},
   } = useRoute();
   const {navigate} = useNavigation();
+  const dispatch = useDispatch()
+  const {cartData, totalAmount} = useSelector(state=>state.cartItems)
+  console.log('cartData', cartData)
+  console.log('totalAmount', totalAmount)
+
+  useEffect(()=>{
+    const itemChecking = () => {
+      const itemAvailable = cartData?.find(value => value.id === Product.id);
+      if(itemAvailable) {
+        setCurrentItem(itemAvailable)
+      } else {
+        setCurrentItem()
+      }
+    },
+    itemChecking()
+  },[cartData])
 
   return (
     <View style={styles.container}>
@@ -48,20 +68,20 @@ const SingleProduct = () => {
           </Text>
         </View>
         <View style={styles.footer}>
-          {false ? (
+          {currentItem.quantity > 0 ? (
             <View style={styles.twoBtn}>
-              <Pressable style={styles.btnBox} onPress={() => {}}>
+              <Pressable style={styles.btnBox} onPress={() => { dispatch(removeFromCart(Product.id)) }}>
                 <Text style={styles.btn}>-</Text>
               </Pressable>
               <Pressable>
                 <Text style={styles.btn}>0</Text>
               </Pressable>
-              <Pressable style={styles.btnBox} onPress={() => {}}>
+              <Pressable style={styles.btnBox} onPress={() => {  dispatch(addToCart(Product)) }}>
                 <Text style={styles.btn}>+</Text>
               </Pressable>
             </View>
           ) : (
-            <MyButton onPress={() => {}} title="Add to Cart" />
+            <MyButton onPress={() => {dispatch(addToCart(Product))}} title="Add to Cart" />
           )}
           <MyButton onPress={() => navigate('Cart')} title="View Cart" />
         </View>
