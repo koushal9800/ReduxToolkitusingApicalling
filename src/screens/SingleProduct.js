@@ -26,17 +26,17 @@ const SingleProduct = () => {
   console.log('cartData', cartData)
   console.log('totalAmount', totalAmount)
 
-  useEffect(()=>{
+  useEffect(() => {
     const itemChecking = () => {
       const itemAvailable = cartData?.find(value => value.id === Product.id);
-      if(itemAvailable) {
-        setCurrentItem(itemAvailable)
+      if (itemAvailable) {
+        setCurrentItem(itemAvailable);
       } else {
-        setCurrentItem()
+        setCurrentItem({});
       }
-    },
-    itemChecking()
-  },[cartData])
+    };
+    itemChecking();
+  }, [cartData, Product.id]);
 
   return (
     <View style={styles.container}>
